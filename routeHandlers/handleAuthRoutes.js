@@ -8,13 +8,25 @@ module.exports.signup = async (req, res) => {
   bcrypt.hash(password, SALT_ROUNDS, async function (err, hash) {
     if (err) console.log(err);
     else {
-      const user = new User({
-        email,
-        password: hash,
-      });
-      const response = await user.save();
-      console.log(response);
-      res.json(response);
+      const userData =await User.findOne({email})
+      if(userData){
+        res.status(201).json({
+          message:"user allready exist",
+          status:"failed",
+          email
+        })
+      }else{
+        const user = new User({
+          email,
+          password: hash,
+        });
+        const response = await user.save();
+        res.status(201).json({
+          message:"user successfully created",
+          status:"completed",
+          userID:response.id
+        });
+      }
     }
   });
 };
