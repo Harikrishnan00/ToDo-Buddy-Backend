@@ -37,3 +37,9 @@ module.exports.googleLoginFailure = (req, res) =>{
     });
 }
 
+module.exports.googleLogout = (req,res) =>{
+  console.log("first")
+  req.logout();
+  res.redirect('http://localhost:5173');
+}
+
