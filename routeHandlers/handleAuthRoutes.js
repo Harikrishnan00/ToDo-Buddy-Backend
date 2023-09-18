@@ -1,5 +1,6 @@
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const SALT_ROUNDS = 10;
 
@@ -8,50 +9,70 @@ module.exports.signup = async (req, res) => {
   bcrypt.hash(password, SALT_ROUNDS, async function (err, hash) {
     if (err) console.log(err);
     else {
-      const userData =await User.findOne({email})
-      if(userData){
+      const userData = await User.findOne({ email });
+      if (userData) {
         res.status(201).json({
-          message:"user allready exist",
-          status:"failed",
-          email
-        })
-      }else{
-        const user = new User({
+          message: "user allready exist",
+          status: "failed",
           email,
-          password: hash,
         });
-        const response = await user.save();
-        res.status(201).json({
-          message:"user successfully created",
-          status:"completed",
-          userID:response.id
-        });
+      } else {
+        try {
+          const user = new User({
+            email,
+            password: hash,
+          });
+
+          const response = await user.save();
+          const token = jwt.sign(
+            { id: response.id, role: "user" },
+            process.env.SECRET_KEY
+          );
+
+          res
+            .cookie("access_token", token, {
+              httpOnly: true,
+            })
+            .status(200)
+            .json({
+              message: "user successfully created",
+              status: "completed",
+              userID: response.id,
+            });
+        } catch (error) {
+          console.log(error);
+          res.redirect("/signup/failure");
+        }
       }
     }
   });
 };
 
-module.exports.googleLoginSuccess = (req, res) => {
-  if (req.user) {
+module.exports.signupFailure = async (req,res) => {
+  res.status(400).json({
+    message:"user creation failed",
+    status:"user registratio failed"
+  })
+}
+
+module.exports.authenticationSuccess = async (req,res)=>{
+  if(req.user){
     res.status(200).json({
-      message:"success",
-      profile:req.user
+      message: "user is successfully validated",
+      status:"authentication successfull",
+      profile: req.user,
     });
-  } else {
-    res.redirect("http://localhost:3001/api/auth/callback/failure");
-  }
-};
-
-module.exports.googleLoginFailure = (req, res) =>{
+  }else{
     res.status(400).json({
-      success:"failed",
-      message:"failure"
-    });
+      message: "user validation failed",
+      status:"authentication failed"
+    })
+  }
 }
 
-module.exports.googleLogout = (req,res) =>{
-  console.log("first")
+
+module.exports.googleLogout = (req, res) => {
+  console.log("first");
   req.logout();
-  res.redirect('http://localhost:5173');
-}
-
+  res.redirect("http://localhost:5173");
+};

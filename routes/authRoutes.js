@@ -1,9 +1,10 @@
+const {authorization} = require("../middileware/authorization")
 const { Router } = require("express");
 const {
   signup,
-  googleLoginSuccess,
-  googleLoginFailure,
   googleLogout,
+  authenticationSuccess,
+  signupFailure
 } = require("../routeHandlers/handleAuthRoutes");
 const passport = require("passport");
 
@@ -12,11 +13,9 @@ const router = Router();
 // email and signup
 router.post("/signup", signup);
 
-// google login success
-router.get("/callback/success", googleLoginSuccess);
+router.get("/signup/failure",signupFailure)
 
-// google login failure
-router.get("/callback/failure", googleLoginFailure);
+router.get("/authentication/success",authorization,authenticationSuccess)
 
 router.get(
   "/google",
