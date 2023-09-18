@@ -22,7 +22,7 @@ app.use(
   cookieSession({
     name: "google-auth-session",
     keys: [process.env.SECRET_KEY],
-    maxAge: 2 * 60 * 60 * 10000,
+    maxAge: 1 * 60 * 60 * 10000,
     httpOnly: true,
   })
 );
