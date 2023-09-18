@@ -5,6 +5,8 @@ module.exports.authorization = async (req, res, next) => {
   const token = req.cookies.access_token;
   const user = req.user;
   if (!token && !user) {
+  console.log("first")
+
     res.status(400).json({
       message: "token does not exist",
       status: "authentication failed",

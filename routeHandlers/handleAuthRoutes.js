@@ -11,8 +11,8 @@ module.exports.signup = async (req, res) => {
     else {
       const userData = await User.findOne({ email });
       if (userData) {
-        res.status(201).json({
-          message: "user allready exist",
+        res.status(400).json({
+          message: "user with the email is allready exist",
           status: "failed",
           email,
         });
