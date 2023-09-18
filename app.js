@@ -3,6 +3,7 @@ const express = require("express");
 require("./config/passport");
 const mongoose = require("mongoose");
 const cookieSession = require("cookie-session");
+const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/authRoutes");
 const userRoute = require("./routes/userRoutes");
 const passport = require("passport");
@@ -16,12 +17,13 @@ mongoose
   .then(() => console.log("mongo connected"))
   .catch((err) => console.log(err));
 
+app.use(cookieParser());
 app.use(
   cookieSession({
     name: "google-auth-session",
     keys: [process.env.SECRET_KEY],
     maxAge: 2 * 60 * 60 * 10000,
-    httpOnly:true
+    httpOnly: true,
   })
 );
 
@@ -32,7 +34,7 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     methods: "GET,POST",
-    credentials:true
+    credentials: true,
   })
 );
 
