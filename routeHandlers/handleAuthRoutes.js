@@ -55,6 +55,31 @@ module.exports.signupFailure = async (req, res) => {
   });
 };
 
+module.exports.login = async (req, res) => {
+  if (req.user) {
+    const token = jwt.sign(
+      { id: req.user.id, role: "user" },
+      process.env.SECRET_KEY
+    );
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .json({
+        message: "user successfully created",
+        status: "completed"
+        // userID: response.id,
+      });
+  }
+
+  // res.json({
+  //   message: "user suucessfully logged",
+  //   status: "login completed",
+  //   profile: req.user,
+  // });
+};
+
 module.exports.authenticationSuccess = async (req, res) => {
   if (req.user) {
     res.status(200).json({
@@ -72,9 +97,12 @@ module.exports.authenticationSuccess = async (req, res) => {
 
 module.exports.logout = (req, res) => {
   if (req.cookies.access_token) {
-    res.status(200).cookie("access_token", " ",{
-      maxAge: 100
-    }).redirect("http://localhost:5173")
+    res
+      .status(200)
+      .cookie("access_token", " ", {
+        maxAge: 100,
+      })
+      .redirect("http://localhost:5173");
   } else {
     req.logout();
     res.redirect("http://localhost:5173");
