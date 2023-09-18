@@ -2,7 +2,7 @@ const {authorization} = require("../middileware/authorization")
 const { Router } = require("express");
 const {
   signup,
-  googleLogout,
+  logout,
   authenticationSuccess,
   signupFailure
 } = require("../routeHandlers/handleAuthRoutes");
@@ -30,6 +30,6 @@ router.get(
   })
 );
 
-router.get("/google/logout", googleLogout);
+router.get("/logout", logout);
 
 module.exports = router;

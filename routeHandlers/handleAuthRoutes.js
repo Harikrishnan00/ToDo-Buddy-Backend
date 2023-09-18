@@ -48,31 +48,35 @@ module.exports.signup = async (req, res) => {
   });
 };
 
-module.exports.signupFailure = async (req,res) => {
+module.exports.signupFailure = async (req, res) => {
   res.status(400).json({
-    message:"user creation failed",
-    status:"user registratio failed"
-  })
-}
+    message: "user creation failed",
+    status: "user registratio failed",
+  });
+};
 
-module.exports.authenticationSuccess = async (req,res)=>{
-  if(req.user){
+module.exports.authenticationSuccess = async (req, res) => {
+  if (req.user) {
     res.status(200).json({
       message: "user is successfully validated",
-      status:"authentication successfull",
+      status: "authentication successfull",
       profile: req.user,
     });
-  }else{
+  } else {
     res.status(400).json({
       message: "user validation failed",
-      status:"authentication failed"
-    })
+      status: "authentication failed",
+    });
   }
-}
+};
 
-
-module.exports.googleLogout = (req, res) => {
-  console.log("first");
-  req.logout();
-  res.redirect("http://localhost:5173");
+module.exports.logout = (req, res) => {
+  if (req.cookies.access_token) {
+    res.status(200).cookie("access_token", " ",{
+      maxAge: 100
+    }).redirect("http://localhost:5173")
+  } else {
+    req.logout();
+    res.redirect("http://localhost:5173");
+  }
 };
