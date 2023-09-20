@@ -18,6 +18,7 @@ module.exports.signup = async (req, res) => {
         });
       } else {
         try {
+          
           const user = new User({
             email,
             password: hash,
@@ -69,15 +70,8 @@ module.exports.login = async (req, res) => {
       .json({
         message: "user successfully created",
         status: "completed"
-        // userID: response.id,
       });
   }
-
-  // res.json({
-  //   message: "user suucessfully logged",
-  //   status: "login completed",
-  //   profile: req.user,
-  // });
 };
 
 module.exports.authenticationSuccess = async (req, res) => {
