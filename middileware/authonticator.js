@@ -6,7 +6,6 @@ module.exports.authonticator = async (req, res, next) => {
   const user = req.user;
   if (!token && !user) {
     res.status(400).json({
-      message: "token does not exist",
       status: "authentication failed",
     });
   } else {
@@ -18,7 +17,6 @@ module.exports.authonticator = async (req, res, next) => {
         return next();
       } catch {
         res.status(400).json({
-          message: "token is not valid",
           status: "authentication failed",
         });
       }
